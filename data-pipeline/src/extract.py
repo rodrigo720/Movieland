@@ -46,7 +46,7 @@ def estrazioneFileJson(endpoint,pages=None):
     
 
 #print(json.dumps(estrazioneFileJson("/movie/popular"),ensure_ascii=False,indent=4))
-print(json.dumps(estrazioneFileJson("/genre/movie/list"),ensure_ascii=False,indent=4))
+#print(json.dumps(estrazioneFileJson("/genre/movie/list"),ensure_ascii=False,indent=4))
 
 def lista_film(endpoint,pages) :
     films = []

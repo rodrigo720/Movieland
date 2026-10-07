@@ -1,12 +1,15 @@
 
 from datetime import datetime
 
-def transformaFilm(film):
+def transformaFilm(film,listageneri):
+    
+    dictGeneri = transformaGeneri(listageneri)
+
     filmTrasformati = [
         {
             "nome" : movie.get("title"),
-            "data" : prendiAnno(movie.get("release_date")),
-            "genere" : prendiGeneri(movie.get("genre_ids"))
+            "anno" : prendiAnno(movie.get("release_date")),
+            "genere" : prendiGeneri(movie.get("genre_ids"),dictGeneri)
         } for movie in film
     ]
     return filmTrasformati
@@ -22,4 +25,8 @@ def transformaGeneri(listaGeneri):
 
     return generiList
 
-
+def prendiGeneri(listaIdGeneri,dictGeneri):
+    generi = [
+        dictGeneri[scorriLista] for scorriLista in listaIdGeneri 
+    ]
+    return generi
