@@ -4,7 +4,7 @@ import json
 from dotenv import load_dotenv
 
     
-def estrazioneFileJson(endpoint,pages=None):
+def estrazioneFileJson(endpoint,params=None):
 
     load_dotenv()
 
@@ -28,10 +28,7 @@ def estrazioneFileJson(endpoint,pages=None):
     
     """
 
-    if pages is not None:
-        params = {
-         "page" : pages
-        }
+    if params is not None:
 
         response = requests.get(URL, headers= headers,params=params)    
     else:
@@ -51,7 +48,10 @@ def estrazioneFileJson(endpoint,pages=None):
 def lista_film(endpoint,pages) :
     films = []
     for i in range(1 , pages+1):
-        container = estrazioneFileJson(endpoint,i)
+        params = {
+            "page" : i
+        }
+        container = estrazioneFileJson(endpoint,params)
         result = container["results"]
         films.extend(result)
     return films
@@ -65,12 +65,11 @@ print(json.dumps(lista[0],ensure_ascii=False,indent=4))
 """
 
 def lista_generi(endpoint):
-    container = estrazioneFileJson(endpoint)
+    params = {
+        "language" : "it-IT"
+    }
+    container = estrazioneFileJson(endpoint,params)
     return container["genres"]
 
-"""
-TEST lista_generi
-listaGeneri = lista_generi("/genre/movie/list")
-print(type(listaGeneri))
-print(json.dumps(listaGeneri,ensure_ascii=False,indent=4))
-"""
+#print(json.dumps(lista_generi("/genre/movie/list"),ensure_ascii=False,indent=4))
+
