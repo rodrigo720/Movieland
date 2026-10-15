@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import transform
 from dotenv import load_dotenv
 
     
@@ -38,7 +39,7 @@ def estrazioneFileJson(endpoint,params=None):
     if response.status_code == 200:
         return response.json()
 
-    return Exception(f"errore: {response.status_code}")
+    raise Exception(f"errore: {response.status_code}")
 
     
 
@@ -55,6 +56,10 @@ def lista_film(endpoint,pages) :
         result = container["results"]
         films.extend(result)
     return films
+
+#totale_id = {movie["id"] for movie in lista_film("/movie/popular",20)}#uso un set comprehension con{}
+#print(f"il numero di id sono : {len(totale_id)}")
+#print(len(lista_film("/movie/popular",20)))
 """
 TEST lista_film
 lista = lista_film("/movie/popular",20)
@@ -72,4 +77,30 @@ def lista_generi(endpoint):
     return container["genres"]
 
 #print(json.dumps(lista_generi("/genre/movie/list"),ensure_ascii=False,indent=4))
+
+#ATTORI ESTAZIONE
+#https://api.themoviedb.org/3/movie/{movie_id}/credits
+
+"""
+ATTORI ESTAZIONE
+https://api.themoviedb.org/3/movie/{movie_id}/credits
+uso i metodi dela trasformazione dei film per ricavarmi la set di ID e poi mi ricavo gli attori
+
+"""
+def lista_attori(idFilm):
+    lista = [
+        estrazioneFileJson(f"/movie/{scorri}/credits") for scorri in idFilm
+    ]
+
+    return lista
+
+
+#ANNO DI NASCITA DEGLI ATTORI:
+#GET https://api.themoviedb.org/3/person/{person_id}
+def infoAttori(idAttori):
+    dettagliAttore = [
+        estrazioneFileJson(f"/person/{personId}") for personId in idAttori
+    ]
+    return dettagliAttore
+
 
