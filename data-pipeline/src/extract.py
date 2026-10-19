@@ -5,7 +5,7 @@ import transform
 from dotenv import load_dotenv
 
     
-def estrazioneFileJson(endpoint,params=None):
+def estrazioneFileJson(endpoint,params=None,session=None):
 
     load_dotenv()
 
@@ -28,18 +28,19 @@ def estrazioneFileJson(endpoint,params=None):
     NOTA: le richieste chiave del dict devono essere esistenti e corrispondenti a quello che si vuole cercare
     
     """
+    client = session if session is not None else requests #utilissa sessione gia esistente oppure singola request
 
-    if params is not None:
+    response = client.get(
+    URL,
+    headers=headers,
+    params=params,
+    timeout=(5, 15)#5 connect timeout , 15 read timeout
+    )
 
-        response = requests.get(URL, headers= headers,params=params)    
-    else:
-        response = requests.get(URL, headers= headers)
-
-    
     if response.status_code == 200:
         return response.json()
 
-    raise Exception(f"errore: {response.status_code}")
+    raise Exception(f"errore: {response.raise_for_status()}")
 
     
 
@@ -88,19 +89,22 @@ uso i metodi dela trasformazione dei film per ricavarmi la set di ID e poi mi ri
 
 """
 def lista_attori(idFilm):
-    lista = [
-        estrazioneFileJson(f"/movie/{scorri}/credits") for scorri in idFilm
-    ]
+    lista = []
+
+    for id in idFilm:
+        risultato = estrazioneFileJson(f"/movie/{id}/credits")
+        lista.append(risultato)
 
     return lista
-
 
 #ANNO DI NASCITA DEGLI ATTORI:
 #GET https://api.themoviedb.org/3/person/{person_id}
 def infoAttori(idAttori):
-    dettagliAttore = [
-        estrazioneFileJson(f"/person/{personId}") for personId in idAttori
-    ]
+    dettagliAttore = []
+    with requests.Session() as session:
+        for personId in idAttori:
+            dettagli = estrazioneFileJson(f"/person/{personId}",session=session)
+            dettagliAttore.append(dettagli)
     return dettagliAttore
 
 

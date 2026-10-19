@@ -47,3 +47,26 @@ def caricaFilm(film):
                 for generi in movie["genere"]:
                     valoriVincolo = [movie["id"],generi]
                     cursor.execute(query2,valoriVincolo)
+
+def caricaAttori(attore,associazioni):
+    with connessioneDB() as connessione:
+        with connessione.cursor() as cursor:
+            query1= """
+                    INSERT INTO attore(id,nome,data_nascita) VALUES(%s,%s,%s) 
+                    ON CONFLICT (id)
+                    DO UPDATE SET nome = EXCLUDED.nome,
+                    data_nascita = COALESCE(EXCLUDED.data_nascita, attore.data_nascita);
+                    """
+
+            query2= """
+                    INSERT INTO film_attore(id_film,id_attore) VALUES(%s,%s) 
+                    ON CONFLICT(id_film,id_attore) DO NOTHING
+                    """
+
+            for scorriAttore in attore:
+                valoreAttore = [scorriAttore["id"],scorriAttore["nome"],scorriAttore["compleanno"]]
+                cursor.execute(query1,valoreAttore)
+            
+            for idFilm,idAttore in associazioni:
+                cursor.execute(query2,(idFilm,idAttore))
+

@@ -47,6 +47,7 @@ def transformaAttori(credits):
 
     return list(attori.values()), associazioni
 
+
 def compleannoAttore(infoAttore):
     lista = {attore["id"]:attore.get("birthday") for attore in infoAttore}
     return lista
@@ -61,7 +62,7 @@ def listaAttori(attore,compleanno):
             {
                 "id" : idAttore,
                 "nome" : scorriAttore["nome"],
-                "compleaano" : compleanno.get(idAttore)
+                "compleanno" : compleanno.get(idAttore)
             }
         )
     return listaAttore
